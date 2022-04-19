@@ -1,5 +1,5 @@
 import { View, Text, Image, FlatList } from 'react-native'
-import CartMenuItem from '../../components/CartMenuItem'
+import CartMenuItem from '../../components/BasketMenuItem'
 
 import orders from '../../../assets/data/orders.json'
 import restaurants from '../../../assets/data/restaurants.json'
