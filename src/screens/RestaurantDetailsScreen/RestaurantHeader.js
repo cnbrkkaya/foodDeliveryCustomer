@@ -1,7 +1,8 @@
 import { View, Text, Image } from 'react-native'
+//Styles
 import styles from './styles'
 
-const RestaurantHeader = ({ restaurant }) => {
+export default function RestaurantHeader({ restaurant }) {
   return (
     <View style={styles.page}>
       <Image source={{ uri: restaurant.image }} style={styles.image} />
@@ -18,5 +19,3 @@ const RestaurantHeader = ({ restaurant }) => {
     </View>
   )
 }
-
-export default RestaurantHeader

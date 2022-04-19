@@ -1,4 +1,5 @@
 import { Text, View, Image } from 'react-native'
+//Styles
 import { styles } from './styles'
 
 export default function RestaurantItem({ restaurant }) {

@@ -10,9 +10,9 @@ import OrderDetailsScreen from './src/screens/OrderDetailsScreen'
 export default function App() {
   return (
     <View style={styles.container}>
-      <HomeScreen />
+      {/* <HomeScreen /> */}
       {/* <RestaurantDetailsScreen /> */}
-      {/* <MenuDetailsScreen /> */}
+      <MenuDetailsScreen />
       {/* <CartScreen /> */}
       {/* <OrdersScreen /> */}
       {/* <OrderDetailsScreen /> */}
