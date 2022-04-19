@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 //Icons
 import { AntDesign } from '@expo/vector-icons'
 //Data
 import restaurants from '../../../assets/data/restaurants.json'
 //Styles
 import { styles } from './styles'
+//naviagtion
+import { useNavigation } from '@react-navigation/native'
 
 const menu = restaurants[0].dishes[0]
 
 export default function MenuDetailsScreen() {
+  const navigation = useNavigation()
   const [quantity, setQuantity] = useState(1)
 
   function decrement() {
@@ -48,11 +51,13 @@ export default function MenuDetailsScreen() {
           onPress={increment}
         />
       </View>
-      <View style={styles.button}>
+      <Pressable
+        onPress={() => navigation.navigate('Basket')}
+        style={styles.button}>
         <Text style={styles.buttonText}>
           Add {quantity} to basket &#8226; ${calculateTotal()}
         </Text>
-      </View>
+      </Pressable>
     </View>
   )
 }
