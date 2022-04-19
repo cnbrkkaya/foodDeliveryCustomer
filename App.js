@@ -4,14 +4,16 @@ import HomeScreen from './src/screens/HomeScreen'
 import RestaurantDetailsScreen from './src/screens/RestaurantDetailsScreen'
 import MenuDetailsScreen from './src/screens/MenuDetailsScreen'
 import CartScreen from './src/screens/CartScreen'
+import OrdersScreen from './src/screens/OrdersScreen'
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <CartScreen />
-      {/* <MenuDetailsScreen /> */}
-      {/* <RestaurantDetailsScreen /> */}
       {/* <HomeScreen /> */}
+      {/* <RestaurantDetailsScreen /> */}
+      {/* <MenuDetailsScreen /> */}
+      {/* <CartScreen /> */}
+      <OrdersScreen />
       <StatusBar style='auto' />
     </View>
   )
