@@ -1,19 +1,32 @@
-import { useState } from 'react'
-import { View, Text, Pressable } from 'react-native'
+import { useState, useEffect } from 'react'
+import { View, Text, Pressable, ActivityIndicator } from 'react-native'
 //Icons
 import { AntDesign } from '@expo/vector-icons'
-//Data
-import restaurants from '../../../assets/data/restaurants.json'
 //Styles
 import { styles } from './styles'
 //naviagtion
-import { useNavigation } from '@react-navigation/native'
-
-const menu = restaurants[0].dishes[0]
+import { useNavigation, useRoute } from '@react-navigation/native'
+//import datastore and Menu model
+import { DataStore } from 'aws-amplify'
+import { Menu } from '../../models'
 
 export default function MenuDetailsScreen() {
   const navigation = useNavigation()
+  const route = useRoute()
+  const id = route.params?.id
   const [quantity, setQuantity] = useState(1)
+  const [menu, setMenu] = useState(null)
+
+  async function getMenu() {
+    const menu = await DataStore.query(Menu, id)
+    setMenu(menu)
+  }
+
+  useEffect(() => {
+    if (id) {
+      getMenu()
+    }
+  }, [id])
 
   function decrement() {
     if (quantity > 1) {
@@ -30,6 +43,9 @@ export default function MenuDetailsScreen() {
     return (quantity * menu.price).toFixed(2)
   }
 
+  if (!menu) {
+    return <ActivityIndicator size={'large'} color={'gray'} />
+  }
   return (
     <View style={styles.page}>
       <Text style={styles.name}>{menu.name}</Text>

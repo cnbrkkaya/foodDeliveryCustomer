@@ -13,21 +13,29 @@ import { useRoute } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 //import datastore and Restaurant model
 import { DataStore } from 'aws-amplify'
-import { Restaurant } from '../../models'
+import { Restaurant, Menu } from '../../models'
 
 export default function RestaurantDetailsScreen() {
   const [restaurant, setRestaurant] = useState(null)
+  const [menus, setMenus] = useState([])
   const navigation = useNavigation()
   const route = useRoute()
   const id = route.params?.id
 
   useEffect(() => {
-    const getRestaurant = async () => {
-      const restaurant = await DataStore.query(Restaurant, id)
-      setRestaurant(restaurant)
+    if (id) {
+      getRestaurantAndMenu()
     }
-    getRestaurant()
-  }, [])
+  }, [id])
+
+  async function getRestaurantAndMenu() {
+    const restaurant = await DataStore.query(Restaurant, id)
+    const menus = await DataStore.query(Menu, (menu) =>
+      menu.restaurantID('eq', id)
+    )
+    setRestaurant(restaurant)
+    setMenus(menus)
+  }
 
   if (!restaurant) {
     return <ActivityIndicator size={'large'} color={'gray'} />
@@ -37,7 +45,7 @@ export default function RestaurantDetailsScreen() {
     <View style={styles.page}>
       <FlatList
         ListHeaderComponent={() => <RestaurantHeader restaurant={restaurant} />}
-        data={restaurant.dishes}
+        data={menus}
         renderItem={({ item }) => (
           <MenuListItem menu={item} keyExtractor={(item) => item.name} />
         )}
