@@ -1,15 +1,66 @@
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { Text, TextInput, StyleSheet, Button, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Auth } from 'aws-amplify'
+//Amplify
+import { Auth, DataStore } from 'aws-amplify'
+//Models
+import { User } from '../../models'
+//useAuth
+import { useAuthContext } from '../../contexts/AuthContext'
+//navigation
+import { useNavigation } from '@react-navigation/native'
 
 export default function ProfileScreen() {
-  const [name, setName] = useState('')
-  const [address, setAddress] = useState('')
-  const [lat, setLat] = useState('0')
-  const [lng, setLng] = useState('0')
+  const { sub, setDbUser, dbUser } = useAuthContext()
 
-  const onSave = () => {}
+  const [name, setName] = useState(dbUser?.name || '')
+  const [address, setAddress] = useState(dbUser?.address || '')
+  const [lat, setLat] = useState((dbUser && (dbUser?.lat).toString()) || '0')
+  const [lng, setLng] = useState((dbUser && (dbUser?.lng).toString()) || '0')
+
+  const navigation = useNavigation()
+
+  const onSave = async () => {
+    if (dbUser) {
+      await updateUser()
+    } else {
+      await createUser()
+    }
+    navigation.goBack()
+  }
+  console.log('a')
+  const createUser = async () => {
+    try {
+      const user = await DataStore.save(
+        new User({
+          name,
+          address,
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
+          sub,
+        })
+      )
+      setDbUser(user)
+    } catch (e) {
+      Alert.alert('Error', e.message)
+    }
+  }
+
+  const updateUser = async () => {
+    try {
+      const user = await DataStore.save(
+        User.copyOf(dbUser, (updated) => {
+          updated.name = name
+          updated.address = address
+          updated.lat = parseFloat(lat)
+          updated.lng = parseFloat(lng)
+        })
+      )
+      setDbUser(user)
+    } catch (e) {
+      Alert.alert('Error', e.message)
+    }
+  }
 
   return (
     <SafeAreaView>
@@ -38,6 +89,7 @@ export default function ProfileScreen() {
         onChangeText={setLng}
         placeholder='Longitude'
         style={styles.input}
+        keyboardType='numeric'
       />
       <Button onPress={onSave} title='Save' />
       <Text

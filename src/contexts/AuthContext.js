@@ -6,7 +6,7 @@ const AuthContext = createContext()
 
 export default function AuthContextProvider({ children }) {
   const [authUser, setAuthUser] = useState(null)
-  const [dbUser, setDbUser] = useState(null)
+  const [dbUser, setDbUser] = useState({})
   const sub = authUser?.attributes?.sub
 
   useEffect(() => {
