@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+//Screens
 import HomeScreen from '../screens/HomeScreen'
 import RestaurantDetailsScreen from '../screens/RestaurantDetailsScreen'
 import MenuDetailsScreen from '../screens/MenuDetailsScreen'
@@ -7,15 +8,22 @@ import BasketScreen from '../screens/BasketScreen'
 import OrdersScreen from '../screens/OrdersScreen'
 import OrderDetailsScreen from '../screens/OrderDetailsScreen'
 import ProfileScreen from '../screens/ProfileScreen'
-
+//Context
+import { useAuthContext } from '../contexts/AuthContext'
+//Icons
 import { Foundation, FontAwesome5, MaterialIcons } from '@expo/vector-icons'
 
 const Stack = createNativeStackNavigator()
 
 const RootNavigator = () => {
+  const { dbUser } = useAuthContext()
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name='HomeTabs' component={HomeTabs} />
+      {dbUser ? (
+        <Stack.Screen name='HomeTabs' component={HomeTabs} />
+      ) : (
+        <Stack.Screen name='Profile' component={ProfileScreen} />
+      )}
     </Stack.Navigator>
   )
 }

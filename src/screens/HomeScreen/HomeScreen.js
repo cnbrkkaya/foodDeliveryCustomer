@@ -8,17 +8,17 @@ import { styles } from './styles'
 import { DataStore } from 'aws-amplify'
 import { Restaurant } from '../../models'
 //import API and graphql queries
-import { API, graphqlOperation } from 'aws-amplify'
-import { listRestaurants } from '../../graphql/queries'
+// import { API, graphqlOperation } from 'aws-amplify'
+// import { listRestaurants } from '../../graphql/queries'
 
 export default function HomeScreen() {
   const [restaurants, setRestaurants] = useState([])
 
   //With DataStore
-  const getRestaurants = async () => {
-    const restaurants = await DataStore.query(Restaurant)
-    setRestaurants(restaurants)
-  }
+  // const getRestaurants = async () => {
+  //   const restaurants = await DataStore.query(Restaurant)
+  //   setRestaurants(restaurants)
+  // }
   //With API
   // function getRestaurants() {
   //   API.graphql(graphqlOperation(listRestaurants))
@@ -29,7 +29,8 @@ export default function HomeScreen() {
   //     .catch((err) => console.log(err))
   // }
   useEffect(() => {
-    getRestaurants()
+    // getRestaurants()
+    DataStore.query(Restaurant).then((data) => setRestaurants(data))
   }, [])
 
   return (
