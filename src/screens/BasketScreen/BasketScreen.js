@@ -1,32 +1,43 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import { View, Text, FlatList, Pressable } from 'react-native'
 //Components
 import BasketMenuItem from '../../components/BasketMenuItem'
-//Data
-import restaurants from '../../../assets/data/restaurants.json'
 //Styles
 import { styles } from './styles'
-
-const restaurant = restaurants[0]
+//navigation
+import { useNavigation } from '@react-navigation/native'
+//contexts
+import { useBasketContext } from '../../contexts/BasketContext'
+import { useOrderContext } from '../../contexts/OrderContext'
 
 export default function BasketScreen() {
+  const { restaurant, basketDishes, totalPrice } = useBasketContext()
+  const { createOrder } = useOrderContext()
+  const navigation = useNavigation()
+
+  const onCreateOrder = async () => {
+    await createOrder()
+    navigation.goBack()
+  }
   return (
     <View style={styles.page}>
-      <Text style={styles.name}>{restaurant.name}</Text>
+      <Text style={styles.name}>{restaurant?.name}</Text>
+
       <Text style={{ fontWeight: 'bold', marginTop: 20, fontSize: 19 }}>
         Your items
       </Text>
 
       <FlatList
-        data={restaurant.dishes}
-        renderItem={({ item }) => <BasketMenuItem basketMenuItem={item} />}
-        keyExtractor={(item) => item.name}
+        data={basketDishes}
+        renderItem={({ item }) => <BasketMenuItem basketDish={item} />}
       />
 
       <View style={styles.separator} />
 
-      <View style={styles.button}>
-        <Text style={styles.buttonText}>Create order</Text>
-      </View>
+      <Pressable onPress={onCreateOrder} style={styles.button}>
+        <Text style={styles.buttonText}>
+          Create order &#8226; ${totalPrice.toFixed(2)}
+        </Text>
+      </Pressable>
     </View>
   )
 }
