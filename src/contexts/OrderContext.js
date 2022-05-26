@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { DataStore } from 'aws-amplify'
-import { Order, OrderDish } from '../models'
+import { Order, OrderMenu, Basket } from '../models'
 import { useAuthContext } from './AuthContext'
 import { useBasketContext } from './BasketContext'
 
@@ -31,7 +31,7 @@ const OrderContextProvider = ({ children }) => {
     await Promise.all(
       basketDishes.map((basketDish) =>
         DataStore.save(
-          new OrderDish({
+          new OrderMenu({
             quantity: basketDish.quantity,
             orderID: newOrder.id,
             Dish: basketDish.Dish,
@@ -48,11 +48,11 @@ const OrderContextProvider = ({ children }) => {
 
   const getOrder = async (id) => {
     const order = await DataStore.query(Order, id)
-    const orderDishes = await DataStore.query(OrderDish, (od) =>
+    const orderMenus = await DataStore.query(OrderMenu, (od) =>
       od.orderID('eq', id)
     )
 
-    return { ...order, dishes: orderDishes }
+    return { ...order, menus: orderMenus }
   }
 
   return (
