@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react'
-import { View, FlatList, ActivityIndicator } from 'react-native'
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
+  Text,
+} from 'react-native'
 //Components
 import MenuListItem from '../../components/MenuListItem'
 import RestaurantHeader from './RestaurantHeader'
@@ -7,13 +13,13 @@ import RestaurantHeader from './RestaurantHeader'
 import { Ionicons } from '@expo/vector-icons'
 //Styles
 import styles from './styles'
-//Route
-import { useRoute } from '@react-navigation/native'
-//navigation
-import { useNavigation } from '@react-navigation/native'
+//Route and navigation
+import { useRoute, useNavigation } from '@react-navigation/native'
 //import datastore and Restaurant model
 import { DataStore } from 'aws-amplify'
 import { Restaurant, Menu } from '../../models'
+//Contexts
+import { useBasketContext } from '../../contexts/BasketContext'
 
 export default function RestaurantDetailsScreen() {
   const [restaurant, setRestaurant] = useState(null)
@@ -22,6 +28,12 @@ export default function RestaurantDetailsScreen() {
   const route = useRoute()
   const id = route.params?.id
 
+  const {
+    setRestaurant: setBasketRestaurant,
+    basket,
+    basketDishes,
+  } = useBasketContext()
+
   useEffect(() => {
     if (id) {
       getRestaurantAndMenu()
@@ -29,6 +41,8 @@ export default function RestaurantDetailsScreen() {
   }, [id])
 
   async function getRestaurantAndMenu() {
+    setBasketRestaurant(null)
+    // fetch the restaurant with the id
     const restaurant = await DataStore.query(Restaurant, id)
     const menus = await DataStore.query(Menu, (menu) =>
       menu.restaurantID('eq', id)
@@ -36,6 +50,10 @@ export default function RestaurantDetailsScreen() {
     setRestaurant(restaurant)
     setMenus(menus)
   }
+
+  useEffect(() => {
+    setBasketRestaurant(restaurant)
+  }, [restaurant])
 
   if (!restaurant) {
     return <ActivityIndicator size={'large'} color={'gray'} />
@@ -58,6 +76,15 @@ export default function RestaurantDetailsScreen() {
         color='white'
         style={styles.iconContainer}
       />
+      {basket && (
+        <Pressable
+          onPress={() => navigation.navigate('Basket')}
+          style={styles.button}>
+          <Text style={styles.buttonText}>
+            Open basket ({basketDishes.length})
+          </Text>
+        </Pressable>
+      )}
     </View>
   )
 }

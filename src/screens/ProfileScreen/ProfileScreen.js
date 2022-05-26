@@ -28,7 +28,7 @@ export default function ProfileScreen() {
     }
     navigation.goBack()
   }
-  console.log('a')
+
   const createUser = async () => {
     try {
       const user = await DataStore.save(

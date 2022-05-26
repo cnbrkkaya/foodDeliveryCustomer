@@ -9,6 +9,8 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 //import datastore and Menu model
 import { DataStore } from 'aws-amplify'
 import { Menu } from '../../models'
+//Contexts
+import { useBasketContext } from '../../contexts/BasketContext'
 
 export default function MenuDetailsScreen() {
   const navigation = useNavigation()
@@ -16,6 +18,7 @@ export default function MenuDetailsScreen() {
   const id = route.params?.id
   const [quantity, setQuantity] = useState(1)
   const [menu, setMenu] = useState(null)
+  const { addMenuToBasket } = useBasketContext()
 
   async function getMenu() {
     const menu = await DataStore.query(Menu, id)
@@ -27,6 +30,11 @@ export default function MenuDetailsScreen() {
       getMenu()
     }
   }, [id])
+
+  async function handleAddToBasket() {
+    await addMenuToBasket(menu, quantity)
+    navigation.goBack()
+  }
 
   function decrement() {
     if (quantity > 1) {
@@ -67,9 +75,7 @@ export default function MenuDetailsScreen() {
           onPress={increment}
         />
       </View>
-      <Pressable
-        onPress={() => navigation.navigate('Basket')}
-        style={styles.button}>
+      <Pressable onPress={handleAddToBasket} style={styles.button}>
         <Text style={styles.buttonText}>
           Add {quantity} to basket &#8226; ${calculateTotal()}
         </Text>
