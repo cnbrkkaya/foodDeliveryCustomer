@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react'
 import { DataStore } from 'aws-amplify'
-import { Basket, BasketDish } from '../models'
+import { Basket, BasketMenu } from '../models'
 import { useAuthContext } from './AuthContext'
 
 const BasketContext = createContext({})
@@ -10,10 +10,10 @@ const BasketContextProvider = ({ children }) => {
 
   const [restaurant, setRestaurant] = useState(null)
   const [basket, setBasket] = useState(null)
-  const [basketDishes, setBasketDishes] = useState([])
+  const [basketMenus, setBasketMenus] = useState([])
 
-  const totalPrice = basketDishes.reduce(
-    (sum, basketDish) => sum + basketDish.quantity * basketDish.Dish.price,
+  const totalPrice = basketMenus.reduce(
+    (sum, basketMenu) => sum + basketMenu.quantity * basketMenu.Menu.price,
     restaurant?.deliveryFee
   )
 
@@ -25,22 +25,22 @@ const BasketContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (basket) {
-      DataStore.query(BasketDish, (bd) => bd.basketID('eq', basket.id)).then(
-        setBasketDishes
+      DataStore.query(BasketMenu, (bd) => bd.basketID('eq', basket.id)).then(
+        setBasketMenus
       )
     }
   }, [basket])
 
-  const addDishToBasket = async (dish, quantity) => {
+  const addMenuToBasket = async (menu, quantity) => {
     // get the existing basket or create a new one
     let theBasket = basket || (await createNewBasket())
 
-    // create a BasketDish item and save to Datastore
-    const newDish = await DataStore.save(
-      new BasketDish({ quantity, Dish: dish, basketID: theBasket.id })
+    // create a BasketMenu item and save to Datastore
+    const newMenu = await DataStore.save(
+      new BasketMenu({ quantity, Menu: menu, basketID: theBasket.id })
     )
 
-    setBasketDishes([...basketDishes, newDish])
+    setBasketMenus([...basketMenus, newMenu])
   }
 
   const createNewBasket = async () => {
@@ -54,11 +54,11 @@ const BasketContextProvider = ({ children }) => {
   return (
     <BasketContext.Provider
       value={{
-        addDishToBasket,
+        addMenuToBasket,
         setRestaurant,
         restaurant,
         basket,
-        basketDishes,
+        basketMenus,
         totalPrice,
       }}>
       {children}

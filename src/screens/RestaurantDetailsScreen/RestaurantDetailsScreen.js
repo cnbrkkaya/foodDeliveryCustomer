@@ -31,7 +31,7 @@ export default function RestaurantDetailsScreen() {
   const {
     setRestaurant: setBasketRestaurant,
     basket,
-    basketDishes,
+    basketMenus,
   } = useBasketContext()
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function RestaurantDetailsScreen() {
           onPress={() => navigation.navigate('Basket')}
           style={styles.button}>
           <Text style={styles.buttonText}>
-            Open basket ({basketDishes.length})
+            Open basket ({basketMenus.length})
           </Text>
         </Pressable>
       )}

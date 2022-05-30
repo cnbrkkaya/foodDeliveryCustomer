@@ -10,7 +10,7 @@ import { useBasketContext } from '../../contexts/BasketContext'
 import { useOrderContext } from '../../contexts/OrderContext'
 
 export default function BasketScreen() {
-  const { restaurant, basketDishes, totalPrice } = useBasketContext()
+  const { restaurant, basketMenus, totalPrice } = useBasketContext()
   const { createOrder } = useOrderContext()
   const navigation = useNavigation()
 
@@ -27,8 +27,8 @@ export default function BasketScreen() {
       </Text>
 
       <FlatList
-        data={basketDishes}
-        renderItem={({ item }) => <BasketMenuItem basketDish={item} />}
+        data={basketMenus}
+        renderItem={({ item }) => <BasketMenuItem basketMenuItem={item} />}
       />
 
       <View style={styles.separator} />

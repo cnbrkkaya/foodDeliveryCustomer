@@ -2,11 +2,11 @@ import { createContext, useEffect, useState, useContext } from 'react'
 import { Auth, DataStore } from 'aws-amplify'
 import { User } from '../models'
 
-const AuthContext = createContext()
+const AuthContext = createContext({})
 
 export default function AuthContextProvider({ children }) {
   const [authUser, setAuthUser] = useState(null)
-  const [dbUser, setDbUser] = useState({})
+  const [dbUser, setDbUser] = useState(null)
   const sub = authUser?.attributes?.sub
 
   useEffect(() => {

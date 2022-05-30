@@ -8,7 +8,7 @@ const OrderContext = createContext({})
 
 const OrderContextProvider = ({ children }) => {
   const { dbUser } = useAuthContext()
-  const { restaurant, totalPrice, basketDishes, basket } = useBasketContext()
+  const { restaurant, totalPrice, basketMenus, basket } = useBasketContext()
 
   const [orders, setOrders] = useState([])
 
@@ -27,14 +27,13 @@ const OrderContextProvider = ({ children }) => {
       })
     )
 
-    // add all basketDishes to the order
     await Promise.all(
-      basketDishes.map((basketDish) =>
+      basketMenus.map((basketMenu) =>
         DataStore.save(
           new OrderMenu({
-            quantity: basketDish.quantity,
+            quantity: basketMenu.quantity,
             orderID: newOrder.id,
-            Dish: basketDish.Dish,
+            Menu: basketMenu.Menu,
           })
         )
       )
